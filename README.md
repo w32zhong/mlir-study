@@ -21,7 +21,7 @@ ninja -C build -j 12
 
 ## [Toy Tutorial](https://mlir.llvm.org/docs/Tutorials/Toy/)
 ```sh
-./build/bin/clang++ \
+./build/bin/clang++ -g \
     -o build/toyc.bin \
     llvm-project/mlir/examples/toy/Ch1/toyc.cpp \
     llvm-project/mlir/examples/toy/Ch1/parser/AST.cpp \
@@ -29,4 +29,15 @@ ninja -C build -j 12
     $(build/bin/llvm-config --cxxflags --ldflags --libs core support native --system-libs)
 
 ./build/toyc.bin llvm-project/mlir/test/Examples/Toy/Ch1/ast.toy -emit=ast
+```
+
+lldb usage example:
+```sh
+./build/bin/lldb ./build/toyc.bin
+(lldb) b Parser.h:42
+(lldb) r llvm-project/mlir/test/Examples/Toy/Ch1/ast.toy -emit=ast
+(lldb) f # frame
+(lldb) expr auto t = lexer.getNextToken(); t;
+(lldb) p lexer.curTok
+(lldb) c # continue
 ```
