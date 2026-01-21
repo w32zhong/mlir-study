@@ -9,7 +9,7 @@ tar xzf b76089c7f3d6593d2e2c83db7dbf4965b656bd8c.tar.gz -C llvm-project --strip-
 ```
 
 ## Build
-```
+```sh
 cmake -S ./llvm-project/llvm -B build -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_ENABLE_PROJECTS="clang;lld;lldb;clang-tools-extra;mlir" \
@@ -17,4 +17,16 @@ cmake -S ./llvm-project/llvm -B build -G Ninja \
     -DLLVM_TARGETS_TO_BUILD="Native;NVPTX"
 
 ninja -C build -j 12
+```
+
+## [Toy Tutorial](https://mlir.llvm.org/docs/Tutorials/Toy/)
+```sh
+./build/bin/clang++ \
+    -o build/toyc.bin \
+    llvm-project/mlir/examples/toy/Ch1/toyc.cpp \
+    llvm-project/mlir/examples/toy/Ch1/parser/AST.cpp \
+    -I llvm-project/mlir/examples/toy/Ch1/include \
+    $(build/bin/llvm-config --cxxflags --ldflags --libs core support native --system-libs)
+
+./build/toyc.bin llvm-project/mlir/test/Examples/Toy/Ch1/ast.toy -emit=ast
 ```
