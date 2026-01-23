@@ -60,11 +60,6 @@ git submodule update --init --recursive
 
 ## Build
 ```sh
-# a few patches (on any error, search for "CMake Error")
-cp ../pytorch_patch/cmake/*.cmake cmake/*.cmake
-../pytorch_patch/patch.sh
-
-# build
 rm -rf ./build
 CMAKE_ONLY=1 python setup.py build
 cmake --build ./build --target install --config Release -j $((`nproc` - 2))
