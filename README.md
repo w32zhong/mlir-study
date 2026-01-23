@@ -46,6 +46,9 @@ lldb usage example:
 # PyTorch
 ## Download
 ```sh
-wget https://github.com/pytorch/pytorch/releases/download/v2.8.0/pytorch-v2.8.0.tar.gz
-tar xzf pytorch-v2.8.0.tar.gz -C pytorch --strip-components=1
+wget https://github.com/pytorch/pytorch/archive/refs/tags/v2.10.0.tar.gz -O pytorch.tar.gz
+tar xzf pytorch.tar.gz -C pytorch --strip-components=1
+STUDY_ROOT=$(pwd)
+cd pytorch
+$STUDY_ROOT/scripts/git_submodule_update.sh
 ```

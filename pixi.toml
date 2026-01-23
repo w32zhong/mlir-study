@@ -9,7 +9,9 @@ version = "0.1.0"
 
 [dependencies]
 python = "3.13.7.*"
+cmake = ">=4.2.2,<5"
 
 [pypi-dependencies]
 setuptools = ">=80.10.1, <81"
 pyyaml = ">=6.0.3, <7"
+pip = ">=25.3, <26"
