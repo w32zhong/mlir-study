@@ -1,7 +1,7 @@
 [workspace]
 authors = ["w32zhong <clock126@126.com>"]
 channels = ["conda-forge", "nvidia"]
-name = "mlir-study"
+name = "torch-compile-study"
 platforms = ["linux-64"]
 version = "0.1.0"
 
