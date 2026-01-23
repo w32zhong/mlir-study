@@ -49,7 +49,8 @@ lldb usage example:
 # pytorch requires git repo to know the exact versions of 3rd_party dependencies
 rm -rf pytorch
 git clone -b v2.10.0 --depth 1 https://github.com/pytorch/pytorch pytorch
-cd pytorch && git checkout .
+git checkout ./pytorch/.keep
+cd pytorch
 
 # download pytorch submodules
 git submodule update --init --recursive
