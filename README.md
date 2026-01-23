@@ -5,8 +5,8 @@ commit: `b76089c7f3d6593d2e2c83db7dbf4965b656bd8c`
 
 ## Download
 ```sh
-wget https://github.com/llvm/llvm-project/archive/{}.tar.gz
-tar xzf b76089c7f3d6593d2e2c83db7dbf4965b656bd8c.tar.gz -C llvm-project --strip-components=1
+wget https://github.com/llvm/llvm-project/archive/{commit}.tar.gz -O llvm-project.tar.gz
+tar xzf llvm-project.tar.gz -C llvm-project --strip-components=1
 ```
 
 ## Build
@@ -48,7 +48,14 @@ lldb usage example:
 ```sh
 wget https://github.com/pytorch/pytorch/archive/refs/tags/v2.10.0.tar.gz -O pytorch.tar.gz
 tar xzf pytorch.tar.gz -C pytorch --strip-components=1
+```
+
+## Build
+```sh
 STUDY_ROOT=$(pwd)
 cd pytorch
 $STUDY_ROOT/scripts/git_submodule_update.sh
+
+rm -rf ./build
+USE_SYSTEM_NCCL=0 CMAKE_ONLY=1 python setup.py develop
 ```
