@@ -65,6 +65,6 @@ cp ../pytorch_patch/cmake/*.cmake cmake/*.cmake
 
 # build
 rm -rf ./build
-USE_SYSTEM_NCCL=0 CMAKE_ONLY=1 python setup.py build
-cmake --build ./build --target install --config Release
+CMAKE_ONLY=1 python setup.py build
+cmake --build ./build --target install --config Release -j $((`nproc` - 2))
 ```
