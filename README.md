@@ -11,13 +11,13 @@ tar xzf llvm-project.tar.gz -C llvm-project --strip-components=1
 
 ## Build
 ```sh
-cmake -S ./llvm-project/llvm -B build -G Ninja \
+cmake -S ./llvm-project/llvm -B ./llvm-project/build -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_ENABLE_PROJECTS="clang;lld;lldb;clang-tools-extra;mlir" \
     -DLLVM_BUILD_EXAMPLES=ON \
     -DLLVM_TARGETS_TO_BUILD="Native;NVPTX"
 
-ninja -C build -j 12
+ninja -C ./llvm-project/build -j $((`nproc` - 2))
 ```
 
 ## [Toy Tutorial](https://mlir.llvm.org/docs/Tutorials/Toy/)
