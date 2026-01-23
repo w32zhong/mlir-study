@@ -46,19 +46,19 @@ lldb usage example:
 # PyTorch
 ## Download
 ```sh
-wget https://github.com/pytorch/pytorch/archive/refs/tags/v2.10.0.tar.gz -O pytorch.tar.gz
-tar xzf pytorch.tar.gz -C pytorch --strip-components=1
+# pytorch requires git repo to know the exact versions of 3rd_party dependencies
+rm -rf pytorch
+git clone -b v2.10.0 --depth 1 https://github.com/pytorch/pytorch pytorch
+cd pytorch && git checkout .
+
+# download pytorch submodules
+git submodule update --init --recursive
+
+# Optional: backup at this point in case of a fresh rebuild.
 ```
 
 ## Build
 ```sh
-STUDY_ROOT=$(pwd)
-cd pytorch
-
-# download pytorch submodules
-$STUDY_ROOT/scripts/git_submodule_update.sh
-# optional: backup these third_party/* in case of a fresh rebuild.
-
 # a few patches (on any error, search for "CMake Error")
 cp ../pytorch_patch/cmake/*.cmake cmake/*.cmake
 ../pytorch_patch/patch.sh
