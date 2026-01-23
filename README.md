@@ -54,12 +54,17 @@ tar xzf pytorch.tar.gz -C pytorch --strip-components=1
 ```sh
 STUDY_ROOT=$(pwd)
 cd pytorch
+
+# download pytorch submodules
 $STUDY_ROOT/scripts/git_submodule_update.sh
 # optional: backup these third_party/* in case of a fresh rebuild.
 
-rm -rf ./build
-# a few cmake patches (on any error, search for "CMake Error")
+# a few patches (on any error, search for "CMake Error")
 cp ../pytorch_patch/cmake/*.cmake cmake/*.cmake
+../pytorch_patch/patch.sh
+
+# build
+rm -rf ./build
 USE_SYSTEM_NCCL=0 CMAKE_ONLY=1 python setup.py build
 cmake --build ./build --target install --config Release
 ```
