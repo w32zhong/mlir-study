@@ -1,4 +1,5 @@
 *.tar.gz
 llvm-project/
+pytorch/
 build/
 .cache/

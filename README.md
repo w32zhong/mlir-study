@@ -1,3 +1,4 @@
+# LLVM
 A stripped [LLVM project](https://github.com/llvm/llvm-project),
 commit: `b76089c7f3d6593d2e2c83db7dbf4965b656bd8c`
 (this commit is selected to align [Modular code](https://github.com/modular/modular/blob/main/MODULE.bazel)).
@@ -40,4 +41,11 @@ lldb usage example:
 (lldb) expr auto t = lexer.getNextToken(); t;
 (lldb) p lexer.curTok
 (lldb) c # continue
+```
+
+# PyTorch
+## Download
+```sh
+wget https://github.com/pytorch/pytorch/releases/download/v2.8.0/pytorch-v2.8.0.tar.gz
+tar xzf pytorch-v2.8.0.tar.gz -C pytorch --strip-components=1
 ```
