@@ -55,7 +55,9 @@ tar xzf pytorch.tar.gz -C pytorch --strip-components=1
 STUDY_ROOT=$(pwd)
 cd pytorch
 $STUDY_ROOT/scripts/git_submodule_update.sh
+# optional: backup these third_party/* in case of a fresh rebuild.
 
 rm -rf ./build
 USE_SYSTEM_NCCL=0 CMAKE_ONLY=1 python setup.py develop
+# on any error, search for "CMake Error"
 ```
