@@ -11,7 +11,7 @@ cmake -S ./llvm-project/llvm -B ./llvm-project/build -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_ENABLE_PROJECTS="clang;lld;lldb;clang-tools-extra;mlir" \
     -DLLVM_BUILD_EXAMPLES=ON \
-    -DLLVM_TARGETS_TO_BUILD="Native;NVPTX"
+    -DLLVM_TARGETS_TO_BUILD="Native;NVPTX" # add AMDGPU to support AMD
 
 ninja -C ./llvm-project/build -j $((`nproc` - 2))
 ```
@@ -106,16 +106,8 @@ cd triton
 
 ```
 
-Remove `amd` in target backends:
-```diff
--backends = [*BackendInstaller.copy(["nvidia", "amd"]), *BackendInstaller.copy_externals()]
-+backends = [*BackendInstaller.copy(["nvidia"]), *BackendInstaller.copy_externals()]
-```
-
 Uncomment AMD targets in `CMakeLists.txt`:
 ```
-    #MLIRAMDGPUDialect
-    ...
     #LLVMAMDGPUCodeGen
     #LLVMAMDGPUAsmParser
 ```
@@ -134,7 +126,7 @@ export LLVM_LIBRARY_DIR=${LLVM_BUILD_DIR}/lib
 export LLVM_SYSPATH=${LLVM_BUILD_DIR}
 # pip editable build trigers `develop` (deprecated) or `editable_wheel` (PEP 660)
 pip install -e . --no-build-isolation -v
-# alternatively, call setuptools super().run() `editable_wheel` which runs `build_ext`
+# alternatively, call setuptools super().run() `editable_wheel` (it will run `build_ext`)
 python setup.py clean
 python setup.py editable_wheel
 ```
