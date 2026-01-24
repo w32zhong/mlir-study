@@ -64,40 +64,6 @@ python -m pip install --no-build-isolation -v -e . --config-settings editable_mo
 
 The `--config-settings editable_mode=compat` option is used for making my pyright LSP compatible with the [new editable install](https://setuptools.pypa.io/en/latest/userguide/development_mode.html).
 
-## Toy Example
-```py
-import torch
-
-def toy_graph_break(a, b):
-    x = a / (torch.abs(a) + 1)
-    if b.sum() < 0:
-        b = b * -1
-    return x * b
-
-def toy_kernel_fusion(x, y):
-    z = torch.matmul(x, y)
-    return torch.nn.functional.softmax(z, dim=1)
-
-def toy_2in1(a, b):
-    c = toy_graph_break(a, b)
-    d = toy_kernel_fusion(a, b)
-    return c + d
-
-if __name__ == '__main__':
-    jit_toy_2in1 = torch.compile(toy_2in1)
-    a = torch.rand((10, 10), device='cuda')
-    b = torch.rand((10, 10), device='cuda')
-    print(jit_toy_2in1(a, b))
-```
-
-```sh
-cd toy
-rm -rf ./torch_compile_debug
-export TORCHINDUCTOR_FORCE_DISABLE_CACHES=1 # force re-JIT
-export TORCH_COMPILE_DEBUG=1 # generate ./torch_compile_debug
-CUDA_VISIBLE_DEVICES=0 python toy.py
-```
-
 # Triton
 ## Download
 ```sh
@@ -129,4 +95,42 @@ pip install -e . --no-build-isolation -v
 # alternatively, call setuptools super().run() `editable_wheel` (it will run `build_ext`)
 python setup.py clean
 python setup.py editable_wheel
+```
+
+# Toy Example
+```py
+import torch
+
+def toy_graph_break(a, b):
+    x = a / (torch.abs(a) + 1)
+    if b.sum() < 0:
+        b = b * -1
+    return x * b
+
+def toy_kernel_fusion(x, y):
+    z = torch.matmul(x, y)
+    return torch.nn.functional.softmax(z, dim=1)
+
+def toy_2in1(a, b):
+    c = toy_graph_break(a, b)
+    d = toy_kernel_fusion(a, b)
+    return c + d
+
+if __name__ == '__main__':
+    jit_toy_2in1 = torch.compile(toy_2in1)
+    a = torch.rand((10, 10), device='cuda')
+    b = torch.rand((10, 10), device='cuda')
+    print(jit_toy_2in1(a, b))
+```
+
+```sh
+cd toy
+
+python test_install.py # test our install
+
+# now, run a toy torch-compile program
+rm -rf ./torch_compile_debug
+export TORCHINDUCTOR_FORCE_DISABLE_CACHES=1 # force re-JIT
+export TORCH_COMPILE_DEBUG=1 # generate ./torch_compile_debug
+CUDA_VISIBLE_DEVICES=0 python toy.py
 ```
