@@ -101,3 +101,15 @@ export TORCHINDUCTOR_FORCE_DISABLE_CACHES=1 # force re-JIT
 export TORCH_COMPILE_DEBUG=1 # generate ./torch_compile_debug
 CUDA_VISIBLE_DEVICES=0 python toy.py
 ```
+
+# Triton
+## Download
+```sh
+git clone -b v3.6.0 --depth 1 git@github.com:triton-lang/triton.git
+cd triton
+export LLVM_BUILD_DIR=(readlink -f ../llvm-project/build)
+export LLVM_INCLUDE_DIRS=${LLVM_BUILD_DIR}/include
+export LLVM_LIBRARY_DIR=${LLVM_BUILD_DIR}/lib
+export LLVM_SYSPATH=${LLVM_BUILD_DIR}
+pip install -e .
+```

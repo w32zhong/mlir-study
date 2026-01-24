@@ -1,6 +1,7 @@
 *.tar.gz
 llvm-project/
 pytorch/
+triton/
 build/
 .cache/
 torch_compile_debug/
