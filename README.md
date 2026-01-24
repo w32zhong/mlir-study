@@ -64,6 +64,11 @@ lldb usage example:
 (lldb) c # continue
 ```
 
+To install binary to the pixi environment:
+```sh
+cmake --install llvm-project/build --prefix ./.pixi/envs/default
+```
+
 ## Triton
 Download:
 ```sh
