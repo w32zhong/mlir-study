@@ -112,4 +112,7 @@ export LLVM_INCLUDE_DIRS=${LLVM_BUILD_DIR}/include
 export LLVM_LIBRARY_DIR=${LLVM_BUILD_DIR}/lib
 export LLVM_SYSPATH=${LLVM_BUILD_DIR}
 pip install -e . --no-build-isolation -v
+cmake -j 4 \
+    --build ./triton/build/cmake.linux-x86_64-cpython-3.13 \
+    --config TritonRelBuildWithAsserts \
 ```
