@@ -63,7 +63,10 @@ git submodule update --init --recursive
 rm -rf ./build
 CMAKE_ONLY=1 python setup.py build
 cmake --build ./build --target install --config Release -j $((`nproc` - 2))
+python -m pip install --no-build-isolation -v -e . --config-settings editable_mode=compat
 ```
+
+The `--config-settings editable_mode=compat` option is used for making my pyright LSP compatible with the [new editable install](https://setuptools.pypa.io/en/latest/userguide/development_mode.html).
 
 ## Toy Example
 ```py
