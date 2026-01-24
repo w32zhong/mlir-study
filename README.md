@@ -124,7 +124,7 @@ if __name__ == '__main__':
 ```
 
 ```sh
-cd toy
+cd test
 
 python test_install.py # test our install
 
