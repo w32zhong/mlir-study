@@ -1,8 +1,4 @@
 # LLVM
-A stripped [LLVM project](https://github.com/llvm/llvm-project),
-commit: `b76089c7f3d6593d2e2c83db7dbf4965b656bd8c`
-(this commit is selected to align [Modular code](https://github.com/modular/modular/blob/main/MODULE.bazel)).
-
 ## Download
 ```sh
 wget https://github.com/llvm/llvm-project/archive/{commit}.tar.gz -O llvm-project.tar.gz
@@ -107,6 +103,16 @@ CUDA_VISIBLE_DEVICES=0 python toy.py
 ```sh
 git clone -b v3.6.0 --depth 1 git@github.com:triton-lang/triton.git
 cd triton
+```
+
+## Determine LLVM version
+```sh
+cat cmake/llvm-hash.txt
+f6ded0be897e2878612dd903f7e8bb85448269e5
+```
+
+## Build
+```sh
 export LLVM_BUILD_DIR=$(readlink -f ../llvm-project/build)
 export LLVM_INCLUDE_DIRS=${LLVM_BUILD_DIR}/include
 export LLVM_LIBRARY_DIR=${LLVM_BUILD_DIR}/lib
