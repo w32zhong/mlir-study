@@ -1,11 +1,69 @@
-# LLVM
-## Download
+## PyTorch
+Download:
+```sh
+# pytorch requires git repo to know the exact versions of 3rd_party dependencies
+rm -rf pytorch
+git clone -b v2.10.0 --depth 1 https://github.com/pytorch/pytorch pytorch
+git checkout ./pytorch/.keep
+cd pytorch
+
+# download pytorch submodules
+git submodule update --init --recursive
+
+# Optional: backup at this point in case of a fresh rebuild.
+```
+
+Build:
+```sh
+rm -rf ./build
+CMAKE_ONLY=1 python setup.py build
+cmake --build ./build --target install --config Release -j $((`nproc` - 2))
+python -m pip install --no-build-isolation -v -e . --config-settings editable_mode=compat
+```
+
+The `--config-settings editable_mode=compat` option is used for making my pyright LSP compatible with the [new editable install](https://setuptools.pypa.io/en/latest/userguide/development_mode.html).
+
+## Triton
+Download:
+```sh
+git clone -b v3.6.0 --depth 1 git@github.com:triton-lang/triton.git
+cd triton
+
+```
+
+Uncomment AMD targets in `CMakeLists.txt`:
+```
+    #LLVMAMDGPUCodeGen
+    #LLVMAMDGPUAsmParser
+```
+
+Determine the LLVM version to match Triton:
+```sh
+cat cmake/llvm-hash.txt
+f6ded0be897e2878612dd903f7e8bb85448269e5
+```
+
+Build:
+```sh
+export LLVM_BUILD_DIR=$(readlink -f ../llvm-project/build)
+export LLVM_INCLUDE_DIRS=${LLVM_BUILD_DIR}/include
+export LLVM_LIBRARY_DIR=${LLVM_BUILD_DIR}/lib
+export LLVM_SYSPATH=${LLVM_BUILD_DIR}
+# pip editable build trigers `develop` (deprecated) or `editable_wheel` (PEP 660)
+pip install -e . --no-build-isolation -v
+# alternatively, call setuptools super().run() `editable_wheel` (it will run `build_ext`)
+python setup.py clean
+python setup.py editable_wheel
+```
+
+## LLVM
+Download:
 ```sh
 wget https://github.com/llvm/llvm-project/archive/{commit}.tar.gz -O llvm-project.tar.gz
 tar xzf llvm-project.tar.gz -C llvm-project --strip-components=1
 ```
 
-## Build
+Build:
 ```sh
 cmake -S ./llvm-project/llvm -B ./llvm-project/build -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
@@ -16,7 +74,7 @@ cmake -S ./llvm-project/llvm -B ./llvm-project/build -G Ninja \
 ninja -C ./llvm-project/build -j $((`nproc` - 2))
 ```
 
-## [Toy Tutorial](https://mlir.llvm.org/docs/Tutorials/Toy/)
+[Toy Tutorial](https://mlir.llvm.org/docs/Tutorials/Toy/):
 ```sh
 ./build/bin/clang++ -g \
     -o build/toyc.bin \
@@ -39,65 +97,8 @@ lldb usage example:
 (lldb) c # continue
 ```
 
-# PyTorch
-## Download
-```sh
-# pytorch requires git repo to know the exact versions of 3rd_party dependencies
-rm -rf pytorch
-git clone -b v2.10.0 --depth 1 https://github.com/pytorch/pytorch pytorch
-git checkout ./pytorch/.keep
-cd pytorch
 
-# download pytorch submodules
-git submodule update --init --recursive
-
-# Optional: backup at this point in case of a fresh rebuild.
-```
-
-## Build
-```sh
-rm -rf ./build
-CMAKE_ONLY=1 python setup.py build
-cmake --build ./build --target install --config Release -j $((`nproc` - 2))
-python -m pip install --no-build-isolation -v -e . --config-settings editable_mode=compat
-```
-
-The `--config-settings editable_mode=compat` option is used for making my pyright LSP compatible with the [new editable install](https://setuptools.pypa.io/en/latest/userguide/development_mode.html).
-
-# Triton
-## Download
-```sh
-git clone -b v3.6.0 --depth 1 git@github.com:triton-lang/triton.git
-cd triton
-
-```
-
-Uncomment AMD targets in `CMakeLists.txt`:
-```
-    #LLVMAMDGPUCodeGen
-    #LLVMAMDGPUAsmParser
-```
-
-## Determine LLVM version
-```sh
-cat cmake/llvm-hash.txt
-f6ded0be897e2878612dd903f7e8bb85448269e5
-```
-
-## Build
-```sh
-export LLVM_BUILD_DIR=$(readlink -f ../llvm-project/build)
-export LLVM_INCLUDE_DIRS=${LLVM_BUILD_DIR}/include
-export LLVM_LIBRARY_DIR=${LLVM_BUILD_DIR}/lib
-export LLVM_SYSPATH=${LLVM_BUILD_DIR}
-# pip editable build trigers `develop` (deprecated) or `editable_wheel` (PEP 660)
-pip install -e . --no-build-isolation -v
-# alternatively, call setuptools super().run() `editable_wheel` (it will run `build_ext`)
-python setup.py clean
-python setup.py editable_wheel
-```
-
-# Toy Example
+## Toy Example
 ```py
 import torch
 
