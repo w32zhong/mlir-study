@@ -103,6 +103,21 @@ CUDA_VISIBLE_DEVICES=0 python toy.py
 ```sh
 git clone -b v3.6.0 --depth 1 git@github.com:triton-lang/triton.git
 cd triton
+
+```
+
+Remove `amd` in target backends:
+```diff
+-backends = [*BackendInstaller.copy(["nvidia", "amd"]), *BackendInstaller.copy_externals()]
++backends = [*BackendInstaller.copy(["nvidia"]), *BackendInstaller.copy_externals()]
+```
+
+Uncomment AMD targets in `CMakeLists.txt`:
+```
+    #MLIRAMDGPUDialect
+    ...
+    #LLVMAMDGPUCodeGen
+    #LLVMAMDGPUAsmParser
 ```
 
 ## Determine LLVM version
@@ -117,8 +132,9 @@ export LLVM_BUILD_DIR=$(readlink -f ../llvm-project/build)
 export LLVM_INCLUDE_DIRS=${LLVM_BUILD_DIR}/include
 export LLVM_LIBRARY_DIR=${LLVM_BUILD_DIR}/lib
 export LLVM_SYSPATH=${LLVM_BUILD_DIR}
+# pip editable build trigers `develop` (deprecated) or `editable_wheel` (PEP 660)
 pip install -e . --no-build-isolation -v
-cmake -j 4 \
-    --build ./triton/build/cmake.linux-x86_64-cpython-3.13 \
-    --config TritonRelBuildWithAsserts \
+# alternatively, call setuptools super().run() `editable_wheel` which runs `build_ext`
+python setup.py clean
+python setup.py editable_wheel
 ```
