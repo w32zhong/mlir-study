@@ -95,8 +95,9 @@ if __name__ == '__main__':
 ```
 
 ```sh
+cd toy
 rm -rf ./torch_compile_debug
 export TORCHINDUCTOR_FORCE_DISABLE_CACHES=1 # force re-JIT
 export TORCH_COMPILE_DEBUG=1 # generate ./torch_compile_debug
-CUDA_VISIBLE_DEVICES=0 python tmp/fusion2.py
+CUDA_VISIBLE_DEVICES=0 python toy.py
 ```

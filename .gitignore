@@ -3,6 +3,7 @@ llvm-project/
 pytorch/
 build/
 .cache/
+torch_compile_debug/
 # pixi environments
 .pixi/*
 !.pixi/config.toml
