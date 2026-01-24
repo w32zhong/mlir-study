@@ -18,46 +18,13 @@ Build:
 rm -rf ./build
 CMAKE_ONLY=1 python setup.py build
 cmake --build ./build --target install --config Release -j $((`nproc` - 2))
-python -m pip install --no-build-isolation -v -e . --config-settings editable_mode=compat
+pip install --no-build-isolation -v -e . --config-settings editable_mode=compat
 ```
 
 The `--config-settings editable_mode=compat` option is used for making my pyright LSP compatible with the [new editable install](https://setuptools.pypa.io/en/latest/userguide/development_mode.html).
 
-## Triton
-Download:
-```sh
-git clone -b v3.6.0 --depth 1 git@github.com:triton-lang/triton.git
-cd triton
-
-```
-
-Uncomment AMD targets in `CMakeLists.txt`:
-```
-    #LLVMAMDGPUCodeGen
-    #LLVMAMDGPUAsmParser
-```
-
-Determine the LLVM version to match Triton:
-```sh
-cat cmake/llvm-hash.txt
-f6ded0be897e2878612dd903f7e8bb85448269e5
-```
-
-Build:
-```sh
-export LLVM_BUILD_DIR=$(readlink -f ../llvm-project/build)
-export LLVM_INCLUDE_DIRS=${LLVM_BUILD_DIR}/include
-export LLVM_LIBRARY_DIR=${LLVM_BUILD_DIR}/lib
-export LLVM_SYSPATH=${LLVM_BUILD_DIR}
-# pip editable build trigers `develop` (deprecated) or `editable_wheel` (PEP 660)
-pip install -e . --no-build-isolation -v
-# alternatively, call setuptools super().run() `editable_wheel` (it will run `build_ext`)
-python setup.py clean
-python setup.py editable_wheel
-```
-
 ## LLVM
-Download:
+Download (see Triton Section for the commit SHA1):
 ```sh
 wget https://github.com/llvm/llvm-project/archive/{commit}.tar.gz -O llvm-project.tar.gz
 tar xzf llvm-project.tar.gz -C llvm-project --strip-components=1
@@ -97,6 +64,38 @@ lldb usage example:
 (lldb) c # continue
 ```
 
+## Triton
+Download:
+```sh
+git clone -b v3.6.0 --depth 1 git@github.com:triton-lang/triton.git
+cd triton
+
+```
+
+Uncomment AMD targets in `CMakeLists.txt`:
+```
+    #LLVMAMDGPUCodeGen
+    #LLVMAMDGPUAsmParser
+```
+
+Determine the LLVM version SHA1 to match Triton:
+```sh
+cat cmake/llvm-hash.txt
+f6ded0be897e2878612dd903f7e8bb85448269e5
+```
+
+Build:
+```sh
+export LLVM_BUILD_DIR=$(readlink -f ../llvm-project/build)
+export LLVM_INCLUDE_DIRS=${LLVM_BUILD_DIR}/include
+export LLVM_LIBRARY_DIR=${LLVM_BUILD_DIR}/lib
+export LLVM_SYSPATH=${LLVM_BUILD_DIR}
+# pip editable build trigers `develop` (deprecated) or `editable_wheel` (PEP 660)
+pip install --no-build-isolation -v -e . --config-settings editable_mode=compat
+# alternatively, call setuptools super().run() `editable_wheel` (it will run `build_ext`)
+python setup.py clean
+python setup.py editable_wheel
+```
 
 ## Toy Example
 ```py
