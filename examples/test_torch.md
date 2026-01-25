@@ -1,12 +1,31 @@
-## Use rebuild changes without `pip install`
+## Quick C++ Changes without `pip install`
 Normally, you will need `pip install` to copy library binary from `./build` to `./torch` to reflect changes in a `csrc` file.
+
+`pip install` also add `stub.o` to the compiled library and generate `_C.*.so`, i.e., `torch._C`:
+```txt
+  building 'torch._C' extension
+  gcc *** torch/csrc/stub.c -ltorch_python -o torch/_C.cpython-313-x86_64-linux-gnu.so
+```
 
 To avoid `pip install`, we can create a symbolic link per the instructions from the [offical PyTorch repo](https://github.com/pytorch/pytorch/blob/main/CONTRIBUTING.md#tips-and-debugging):
 ```sh
-cd torch
-ln -sf ../build/lib.linux-x86_64-cpython-39/torch/_C.cpython-39-x86_64-linux-gnu.so .
-cd -
-ninja -C build install
+torch/lib; ln -sf ../../build/lib/libtorch* .; popd
+```
+
+Now, simply rebuild C++ source can reflect the changes:
+```sh
+ninja -C build install -j 2
+```
+
+You may notice that `torch/_C.cpython-313-x86_64-linux-gnu.so` isn't updated in this case.
+This is because `torch/csrc/stub.c` only wraps the `initModule` entrance function when `import torch`;
+most likely, this thin wrapper does not need to be re-compiled.
+
+The actual entrance definition is defined in `libtorch_python.so`
+```sh
+$ nm --extern-only --demangle --defined-only --line-numbers torch/_C.cpython-313-x86_64-linux-gnu.so | grep initModule # nothing will show up
+$ nm --extern-only --demangle --defined-only torch/lib/libtorch_python.so | grep initModule
+0000000000937287 T initModule
 ```
 
 ## Attaching a Debugger
