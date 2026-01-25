@@ -106,26 +106,26 @@ python setup.py editable_wheel
 ```py
 import torch
 
-def toy_graph_break(a, b):
+def graph_break(a, b):
     x = a / (torch.abs(a) + 1)
     if b.sum() < 0:
         b = b * -1
     return x * b
 
-def toy_kernel_fusion(x, y):
+def kernel_fusion(x, y):
     z = torch.matmul(x, y)
     return torch.nn.functional.softmax(z, dim=1)
 
-def toy_2in1(a, b):
-    c = toy_graph_break(a, b)
-    d = toy_kernel_fusion(a, b)
+def 2in1(a, b):
+    c = graph_break(a, b)
+    d = kernel_fusion(a, b)
     return c + d
 
 if __name__ == '__main__':
-    jit_toy_2in1 = torch.compile(toy_2in1)
+    jit_2in1 = torch.compile(2in1)
     a = torch.rand((10, 10), device='cuda')
     b = torch.rand((10, 10), device='cuda')
-    print(jit_toy_2in1(a, b))
+    print(jit_2in1(a, b))
 ```
 
 ```sh
@@ -137,5 +137,5 @@ python test_install.py # test our install
 rm -rf ./torch_compile_debug
 export TORCHINDUCTOR_FORCE_DISABLE_CACHES=1 # force re-JIT
 export TORCH_COMPILE_DEBUG=1 # generate ./torch_compile_debug
-CUDA_VISIBLE_DEVICES=0 python toy.py
+CUDA_VISIBLE_DEVICES=0 python test_torch_compile.py
 ```
