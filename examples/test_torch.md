@@ -18,9 +18,10 @@ ninja -C build install -j 2
 ```
 
 You may notice that `torch/_C.cpython-313-x86_64-linux-gnu.so` isn't updated in this case.
-This is because `torch/csrc/stub.c` only wraps the `initModule` entrance function when `import torch`;
-most likely, this thin wrapper does not need to be re-compiled.
+This is because `torch/csrc/stub.c` only wraps the `initModule` in the `PyInit__C` Python entrance function which will be called during the first `import torch`;
+it dynamically links to all PyTorch C functions via the ELF DT_NEEDED tags, e.g., `_C.*.so` needs `libtorch_python.so`.
 
+Most likely, this thin wrapper does not need to be re-compiled.
 The actual entrance definition is defined in `libtorch_python.so`
 ```sh
 $ nm --extern-only --demangle --defined-only --line-numbers torch/_C.cpython-313-x86_64-linux-gnu.so | grep initModule # nothing will show up
