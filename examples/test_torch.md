@@ -24,7 +24,8 @@ it dynamically links to all PyTorch C functions via the ELF DT_NEEDED tags, e.g.
 Most likely, this thin wrapper does not need to be re-compiled.
 The actual entrance definition is defined in `libtorch_python.so`
 ```sh
-$ nm --extern-only --demangle --defined-only --line-numbers torch/_C.cpython-313-x86_64-linux-gnu.so | grep initModule # nothing will show up
+$ nm --extern-only --demangle --defined-only --line-numbers torch/_C.*.so | grep initModule
+# nothing will show up here
 $ nm --extern-only --demangle --defined-only torch/lib/libtorch_python.so | grep initModule
 0000000000937287 T initModule
 ```
