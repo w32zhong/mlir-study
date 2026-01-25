@@ -13,9 +13,10 @@ git submodule update --init --recursive
 # Optional: backup at this point in case of a fresh rebuild.
 ```
 
-Build:
+Build (See [common build options](https://github.com/pytorch/pytorch/blob/main/CONTRIBUTING.md#c-development-tips)):
 ```sh
 rm -rf ./build
+DEBUG=1 USE_MKLDNN=0 BUILD_TEST=0 USE_FBGEMM=0 USE_NNPACK=0 USE_QNNPACK=0 USE_XNNPACK=0 \
 CMAKE_ONLY=1 python setup.py build
 cmake --build ./build --target install --config Release -j $((`nproc` - 2))
 pip install --no-build-isolation -v -e . --config-settings editable_mode=compat
@@ -102,41 +103,5 @@ python setup.py clean
 python setup.py editable_wheel
 ```
 
-## Toy Example
-```py
-import torch
-
-def graph_break(a, b):
-    x = a / (torch.abs(a) + 1)
-    if b.sum() < 0:
-        b = b * -1
-    return x * b
-
-def kernel_fusion(x, y):
-    z = torch.matmul(x, y)
-    return torch.nn.functional.softmax(z, dim=1)
-
-def 2in1(a, b):
-    c = graph_break(a, b)
-    d = kernel_fusion(a, b)
-    return c + d
-
-if __name__ == '__main__':
-    jit_2in1 = torch.compile(2in1)
-    a = torch.rand((10, 10), device='cuda')
-    b = torch.rand((10, 10), device='cuda')
-    print(jit_2in1(a, b))
-```
-
-```sh
-cd test
-
-python test_torch.py # test our install
-python test_triton.py # test our install
-
-# now, run a toy torch-compile program
-rm -rf ./torch_compile_debug
-export TORCHINDUCTOR_FORCE_DISABLE_CACHES=1 # force re-JIT
-export TORCH_COMPILE_DEBUG=1 # generate ./torch_compile_debug
-CUDA_VISIBLE_DEVICES=0 python test_torch_compile.py
-```
+## Examples
+[example/](./examples/) directory contains some toy examples (code in `*.py` and their corresponding note files in `*.md`).
