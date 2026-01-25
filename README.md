@@ -131,7 +131,8 @@ if __name__ == '__main__':
 ```sh
 cd test
 
-python test_install.py # test our install
+python test_torch.py # test our install
+python test_triton.py # test our install
 
 # now, run a toy torch-compile program
 rm -rf ./torch_compile_debug
